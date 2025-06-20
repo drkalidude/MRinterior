@@ -28,6 +28,11 @@ public class VRObjectEditor : MonoBehaviour
     public enum EditModeAction { Position, ScaleAndRotate }
     public EditModeAction currentEditAction;
 
+    void Update()
+    {
+        HandleEditMode();
+    }
+
     public void SelectPrefab(int index)
     {
         if (index >= 0 && index < objectPrefabs.Length)
@@ -58,7 +63,7 @@ public class VRObjectEditor : MonoBehaviour
         }
 
         if ((rightControllerRay != null && TryPlaceUsingVRRay(rightControllerRay)) ||
-        (leftControllerRay != null && TryPlaceUsingVRRay(leftControllerRay)))
+            (leftControllerRay != null && TryPlaceUsingVRRay(leftControllerRay)))
         {
             return;
         }
@@ -100,37 +105,49 @@ public class VRObjectEditor : MonoBehaviour
 
     private void SelectObject()
     {
-        if (rightControllerRay.TryGetCurrent3DRaycastHit(out RaycastHit rightHit) ||
-        leftControllerRay.TryGetCurrent3DRaycastHit(out RaycastHit leftHit))
+        RaycastHit hit = default;
+        bool hasHit = false;
+
+        if (rightControllerRay != null && rightControllerRay.TryGetCurrent3DRaycastHit(out hit))
         {
-            RaycastHit hit = rightControllerRay.TryGetCurrent3DRaycastHit(out _) ? rightHit : leftHit;
-            GameObject hitObject = hit.collider.gameObject;
+            hasHit = true;
+        }
+        else if (leftControllerRay != null && leftControllerRay.TryGetCurrent3DRaycastHit(out hit))
+        {
+            hasHit = true;
+        }
 
-            if (hitObject.CompareTag("UI") || hitObject.GetComponent<ARPlane>() != null)
-            {
-                Debug.Log("Hit ignored: UI element or AR Plane.");
-                return;
-            }
+        if (!hasHit) return;
 
-            if (selectedObject != hitObject)
-            {
-                selectedObject = hitObject;
-                selectedObjectText.text = $"Selected: {selectedObject.name}";
-            }
+        GameObject hitObject = hit.collider.gameObject;
+
+        if (hitObject.CompareTag("UI") || hitObject.GetComponent<ARPlane>() != null)
+        {
+            Debug.Log("Hit ignored: UI element or AR Plane.");
+            return;
+        }
+
+        if (selectedObject != hitObject)
+        {
+            selectedObject = hitObject;
+            selectedObjectText.text = $"Selected: {selectedObject.name}";
         }
     }
+
 
     private void HandleObjectScaleAndRotation()
     {
         Vector2 leftJoystickInput = leftHandJoystickAction.action.ReadValue<Vector2>();
-        Vector2 rightJoystickInput = rightHandJoystickAction.action.ReadValue<Vector2>(); if (leftJoystickInput.y != 0)
+        Vector2 rightJoystickInput = rightHandJoystickAction.action.ReadValue<Vector2>();
+
+        if (leftJoystickInput.y != 0)
         {
             Vector3 currentScale = selectedObject.transform.localScale;
             float scaleChange = leftJoystickInput.y * Time.deltaTime;
             selectedObject.transform.localScale = new Vector3(
-            Mathf.Max(0.1f, currentScale.x + scaleChange),
-            Mathf.Max(0.1f, currentScale.y + scaleChange),
-            Mathf.Max(0.1f, currentScale.z + scaleChange)
+                Mathf.Max(0.1f, currentScale.x + scaleChange),
+                Mathf.Max(0.1f, currentScale.y + scaleChange),
+                Mathf.Max(0.1f, currentScale.z + scaleChange)
             );
         }
 
