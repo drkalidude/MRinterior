@@ -27,6 +27,50 @@ public class FurnitureLoader : MonoBehaviour
     {
         categoryPanel.SetActive(false);
         furniturePanel.SetActive(true);
+        objectEditor.ClearSelection();
+
+        // Очистка
+        foreach (Transform c in furnitureButtonsParent)
+            Destroy(c.gameObject);
+        currentLoadedPrefabs.Clear();
+
+        // Загружаем префабы
+        var prefabs = Resources.LoadAll<GameObject>($"Furniture/Prefab/{categoryName}");
+
+        // Загружаем готовые превью
+        var thumbnails = Resources.LoadAll<Sprite>($"Thumbnails/{categoryName}");
+
+        for (int i = 0; i < prefabs.Length; i++)
+        {
+            var prefab = prefabs[i];
+            currentLoadedPrefabs.Add(prefab);
+
+            var btn = Instantiate(furnitureButtonPrefab, furnitureButtonsParent, false);
+
+            // Убираем текст, добавляем превью
+            Text txt = btn.GetComponentInChildren<Text>();
+            if (txt != null) Destroy(txt.gameObject);
+
+            // Устанавливаем превью
+            Image previewImage = btn.GetComponent<Image>();
+            if (previewImage == null) previewImage = btn.AddComponent<Image>();
+
+            if (i < thumbnails.Length)
+            {
+                previewImage.sprite = thumbnails[i];
+            }
+
+            int idx = i;
+            btn.GetComponent<Button>().onClick.AddListener(() =>
+                objectEditor.SelectPrefabByIndex(idx, currentLoadedPrefabs));
+        }
+    }
+
+    /*
+    public void ShowFurnitureForCategory(string categoryName)
+    {
+        categoryPanel.SetActive(false);
+        furniturePanel.SetActive(true);
 
         objectEditor.ClearSelection();
 
@@ -49,7 +93,7 @@ public class FurnitureLoader : MonoBehaviour
             btn.GetComponent<Button>().onClick.AddListener(() =>
                 objectEditor.SelectPrefabByIndex(idx, currentLoadedPrefabs));
         }
-    }
+    }*/
 
     public void ReturnToCategories()
     {
