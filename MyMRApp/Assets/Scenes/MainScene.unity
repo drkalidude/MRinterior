@@ -4654,7 +4654,8 @@ MonoBehaviour:
   categoryPanel: {fileID: 531178988}
   furniturePanel: {fileID: 1996767465}
   furnitureButtonsParent: {fileID: 1048133842}
-  furnitureButtonPrefab: {fileID: 0}
+  furnitureButtonPrefab: {fileID: 7421070509257904012, guid: 9a684e32d8a4c40af999be16612b2233,
+    type: 3}
   objectEditor: {fileID: 1680473094}
 --- !u!1 &1709633684
 GameObject:
