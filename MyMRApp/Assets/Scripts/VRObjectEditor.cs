@@ -7,6 +7,8 @@ using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 
+
+
 public class VRObjectEditor : MonoBehaviour
 {
     public GameObject[] objectPrefabs;
@@ -25,6 +27,8 @@ public class VRObjectEditor : MonoBehaviour
     private GameObject selectedObject;
     private int currentIndex = -1;
 
+    private List<GameObject> currentCategoryPrefabs = new List<GameObject>();
+
     public enum EditModeAction { Position, ScaleAndRotate }
     public EditModeAction currentEditAction;
 
@@ -33,17 +37,18 @@ public class VRObjectEditor : MonoBehaviour
         HandleEditMode();
     }
 
-    public void SelectPrefab(int index)
+    public void SelectPrefabByIndex(int index, List<GameObject> categoryPrefabs)
     {
-        if (index >= 0 && index < objectPrefabs.Length)
+        currentCategoryPrefabs = categoryPrefabs;
+
+        if (index >= 0 && index < currentCategoryPrefabs.Count)
         {
             currentIndex = index;
-            selectedPrefab = objectPrefabs[index];
+            selectedPrefab = currentCategoryPrefabs[index];
             infoText.text = $"Selected prefab: {selectedPrefab.name}";
-        }
-        else
+        } else
         {
-            Debug.LogWarning("Invalid prefab index selected.");
+            Debug.LogWarning("Invalid prefab index selected from category.");
             infoText.text = "Invalid prefab index selected.";
         }
     }
@@ -179,6 +184,16 @@ public class VRObjectEditor : MonoBehaviour
             selectedPrefab = null;
             infoText.text = "No prefab selected.";
         }
+    }
+
+    public void ClearSelection()
+    {
+        selectedPrefab = null;
+        selectedObject = null;
+        currentIndex = -1;
+        currentCategoryPrefabs.Clear();
+        infoText.text = "No prefab selected.";
+        selectedObjectText.text = "No object selected";
     }
 
     public void ResetRotationToUpright()
