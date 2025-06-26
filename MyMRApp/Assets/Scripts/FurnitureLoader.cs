@@ -10,7 +10,7 @@ public class FurnitureLoader : MonoBehaviour
     public GameObject furniturePanel;
     public Transform furnitureButtonsParent;
     public GameObject furnitureButtonPrefab;
-    public string loadPath;
+    private string loadPath;
 
     [Header("Editor Reference")]
     public VRObjectEditor objectEditor;
