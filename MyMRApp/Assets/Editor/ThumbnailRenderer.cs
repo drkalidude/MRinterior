@@ -117,26 +117,6 @@ public class ThumbnailGenerator : EditorWindow
             $"Thumbnails generated for {categories.Length} categories:\n{string.Join(", ", categories)}", "OK");
     }
 
-    /*
-    void GenerateAllThumbnails()
-    {
-        if (thumbnailCamera == null)
-        {
-            EditorUtility.DisplayDialog("Error", "Please setup scene first!", "OK");
-            return;
-        }
-
-        // Находим все префабы в папке Furniture
-        string[] categories = { "Chairs", "Tables", "Sofas", "Lamps", "Decorations", "Rofl" };
-
-        foreach (string category in categories)
-        {
-            GenerateThumbnailsForCategory(category);
-        }
-
-        EditorUtility.DisplayDialog("Complete", "All thumbnails generated successfully!", "OK");
-    }*/
-
     void GenerateThumbnailsForCategory(string categoryName)
     {
         string prefabPath = $"Assets/Resources/Furniture/{categoryName}";

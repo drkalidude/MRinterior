@@ -29,15 +29,12 @@ public class FurnitureLoader : MonoBehaviour
         furniturePanel.SetActive(true);
         objectEditor.ClearSelection();
 
-        // Очистка
         foreach (Transform c in furnitureButtonsParent)
             Destroy(c.gameObject);
         currentLoadedPrefabs.Clear();
 
-        // Загружаем префабы
-        var prefabs = Resources.LoadAll<GameObject>($"Furniture/Prefab/{categoryName}");
+        var prefabs = Resources.LoadAll<GameObject>($"Furniture/{categoryName}");
 
-        // Загружаем готовые превью
         var thumbnails = Resources.LoadAll<Sprite>($"Thumbnails/{categoryName}");
 
         for (int i = 0; i < prefabs.Length; i++)
@@ -47,11 +44,9 @@ public class FurnitureLoader : MonoBehaviour
 
             var btn = Instantiate(furnitureButtonPrefab, furnitureButtonsParent, false);
 
-            // Убираем текст, добавляем превью
             Text txt = btn.GetComponentInChildren<Text>();
             if (txt != null) Destroy(txt.gameObject);
 
-            // Устанавливаем превью
             Image previewImage = btn.GetComponent<Image>();
             if (previewImage == null) previewImage = btn.AddComponent<Image>();
 
@@ -65,35 +60,6 @@ public class FurnitureLoader : MonoBehaviour
                 objectEditor.SelectPrefabByIndex(idx, currentLoadedPrefabs));
         }
     }
-
-    /*
-    public void ShowFurnitureForCategory(string categoryName)
-    {
-        categoryPanel.SetActive(false);
-        furniturePanel.SetActive(true);
-
-        objectEditor.ClearSelection();
-
-        foreach (Transform c in furnitureButtonsParent)
-            Destroy(c.gameObject);
-        currentLoadedPrefabs.Clear();
-
-        loadPath = $"Furniture/Prefab/{categoryName}";
-        var prefabs = Resources.LoadAll<GameObject>(loadPath);
-
-        for (int i = 0; i < prefabs.Length; i++)
-        {
-            var prefab = prefabs[i];
-            currentLoadedPrefabs.Add(prefab);
-
-            var btn = Instantiate(furnitureButtonPrefab, furnitureButtonsParent, false);
-            var txt = btn.GetComponentInChildren<Text>();
-
-            int idx = i;
-            btn.GetComponent<Button>().onClick.AddListener(() =>
-                objectEditor.SelectPrefabByIndex(idx, currentLoadedPrefabs));
-        }
-    }*/
 
     public void ReturnToCategories()
     {
